@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
+import { HelloWorldPanel } from './HelloWorldPanel';
 export function activate(context: vscode.ExtensionContext) {
 
 	console.log('Congratulations, your extension "todovs" is now active!');
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('todovs.helloWorld', () => {
-			vscode.window.showInformationMessage('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb!');
+			HelloWorldPanel.createOrShow(context.extensionUri);
 		})
 	);
 
@@ -17,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("todovs.caioQuestion", async () => {
-			const answer = await vscode.window.showInformationMessage("O caio é um otaro?", "sim", "sim");
+			const answer = await vscode.window.showInformationMessage("Do you like bread?", "yes", "yes");
 			
 			if(answer === "sim" || answer === undefined){
 				vscode.window.showInformationMessage("Indeed");
