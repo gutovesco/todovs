@@ -14,7 +14,8 @@
 		"onCommand:todovs.helloWorld",
 		"onCommand:todovs.askQuestion",
 		"onCommand:todovs.caioQuestion",
-		"onCommand:todovs.refresh"
+		"onCommand:todovs.refresh",
+		"onCommand:todovs.addTodo"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -57,6 +58,11 @@
 				"command": "todovs.refresh",
 				"category": "TodoVS",
 				"title": "Refresh webview"
+			},
+			{
+				"command": "todovs.addTodo",
+				"category": "TodoVS",
+				"title": "Add Todo from selection"
 			}
 		]
 	},

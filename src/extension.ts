@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { HelloWorldPanel } from './HelloWorldPanel';
 import { SidebarProvider } from './SidebarProvider';
+
+
 export function activate(context: vscode.ExtensionContext) {
 	const sidebarProvider = new SidebarProvider(context.extensionUri);
   context.subscriptions.push(
@@ -10,9 +12,32 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+  item.text = "$(file-code) Add todo";
+  item.command = 'todovs.addTodo';
+  item.show();
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('todovs.helloWorld', () => {
 			HelloWorldPanel.createOrShow(context.extensionUri);
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('todovs.addTodo', () => {
+			const {activeTextEditor} = vscode.window;
+
+			if(!activeTextEditor){
+				vscode.window.showInformationMessage("No active text editor");
+				return;
+			}
+
+			const text = activeTextEditor.document.getText(activeTextEditor.selection);
+			
+			sidebarProvider._view?.webview.postMessage({
+				type: "new-todo",
+				value: text
+			});
 		})
 	);
 
