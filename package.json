@@ -21,24 +21,24 @@
 	"contributes": {
 		"viewsContainers": {
 			"activitybar": [
-			  {
-				"id": "todovs-sidebar-view",
-				"title": "TodoVS",
-				"icon": "media/checklist.svg"
-			  }
+				{
+					"id": "todovs-sidebar-view",
+					"title": "TodoVS",
+					"icon": "media/checklist.svg"
+				}
 			]
-		  },
-		  "views": {
+		},
+		"views": {
 			"todovs-sidebar-view": [
-			  {
-				"type": "webview",
-				"id": "todovs-sidebar",
-				"name": "TodoVS",
-				"icon": "media/checklist.svg",
-				"contextualTitle": "TodoVS"
-			  }
+				{
+					"type": "webview",
+					"id": "todovs-sidebar",
+					"name": "TodoVS",
+					"icon": "media/checklist.svg",
+					"contextualTitle": "TodoVS"
+				}
 			]
-		  },
+		},
 		"commands": [
 			{
 				"command": "todovs.helloWorld",
@@ -103,5 +103,10 @@
 		"vscode-test": "^1.4.1",
 		"webpack": "^5.10.0",
 		"webpack-cli": "^4.2.0"
+	},
+	"dependencies": {
+		"pg": "^8.5.1",
+		"reflect-metadata": "^0.1.13",
+		"typeorm": "^0.2.30"
 	}
 }
