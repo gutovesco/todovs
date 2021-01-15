@@ -6,6 +6,8 @@ import { __prod__ } from './constants';
 import { join } from 'path';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import passport from 'passport';
+import { User } from './entities/User';
+import jwt from 'jsonwebtoken';
 
 (async () => {
     try {
@@ -34,9 +36,15 @@ import passport from 'passport';
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         callbackURL: "http://localhost:3006/auth/github/callback"
     },
-        (_, __, profile, cb) => {
-            console.log(profile);
-            cb(null, { accessToken: 'd5a76w4d65awd5w', refreshToken: 'dawdkawodjawd7d6' });
+        async (_, __, profile, cb) => {
+            let user = await User.findOne({ where: { githubId: profile.id } });
+            if (user) {
+                user.name = profile.displayName;
+                await user.save();
+            } else {
+                user = await User.create({ name: profile.displayName, githubId: profile.id }).save();
+            }
+            cb(null, { accessToken: jwt.sign({ userId: user.id }, String(process.env.JWT_SECRET), { expiresIn: "1w" }) });
         }
     ));
 
@@ -44,8 +52,8 @@ import passport from 'passport';
 
     app.get('/auth/github/callback',
         passport.authenticate('github', { session: false }),
-        (_, res) => {
-            res.send('successfull login');
+        (req: any, res) => {
+            res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
         });
 
     app.listen(3006, () => {
