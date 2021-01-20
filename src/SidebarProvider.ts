@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
+import { apiBaseUrl } from "./constants";
 import { getNonce } from "./getNounce";
+import { TokenManager } from "./TokenManager";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
@@ -76,6 +78,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <link href="${styleMainUri}" rel="stylesheet">
         <script nonce="${nonce}">
             const tsvscode = acquireVsCodeApi();
+            const apiBaseUrl = ${JSON.stringify(apiBaseUrl)};
+            const accessToken = ${JSON.stringify(TokenManager.getToken())}
         </script>
             </head>
         <body>
