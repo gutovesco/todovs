@@ -1,13 +1,14 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
+    let accessToken = "";
     let todos: Array<{ text: string; completed: boolean }> = [];
     let text = "";
     let loading = true;
     let user: { name: string; id: number } | null = null;
 
     onMount(async () => {
-        window.addEventListener("message", (event) => {
+        window.addEventListener("message", async (event) => {
             const message = event.data;
             switch (message.type) {
                 case "new-todo":
@@ -16,19 +17,19 @@
                         ...todos,
                     ];
                     break;
+                case "token":
+                    accessToken = message.value;
+                    const response = await fetch(`${apiBaseUrl}/me`, {
+                        headers: {
+                            authorization: `Bearer ${accessToken}`,
+                        },
+                    });
+                    const data = await response.json();
+                    user = data.user;
+                    loading = false;
             }
         });
-        console.log(accessToken)
-        const response = await fetch(`${apiBaseUrl}/me`, {
-            headers: {
-                authorization: `Bearer ${accessToken}`
-            }
-        });
-        
-        const data = await response.json();
-        console.log(data)
-        user = data.user;
-        loading = false;
+        tsvscode.postMessage({ type: "get-token", value: undefined });
     });
 </script>
 
