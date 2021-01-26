@@ -9,6 +9,8 @@ import passport from 'passport';
 import { User } from './entities/User';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
+import { Todo } from './entities/Todo';
+import { isAuth, ReqWithUserId } from './isAuth';
 
 (async () => {
     try {
@@ -32,6 +34,7 @@ import cors from 'cors';
     });
     app.use(cors({ origin: '*' }));
     app.use(passport.initialize());
+    app.use(express.json());
 
     passport.use(new GitHubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
@@ -57,6 +60,11 @@ import cors from 'cors';
         (req: any, res) => {
             res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
         });
+
+    app.post("/todo", isAuth, async (req: any, res) => {
+        const todo = await Todo.create({text: req.body.text, creatorId: req.userId}).save();
+        res.send({ todo });
+    });
 
     app.get("/me", async (req, res) => {
         // Bearer 120jdklowqjed021901
@@ -97,6 +105,5 @@ import cors from 'cors';
             res.send("hello");
         });
         console.log('listening on 3006!');
-        console.log('updated');
     });
 })();

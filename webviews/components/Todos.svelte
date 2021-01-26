@@ -1,8 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-import type { User } from "../types";
+    import type { User } from "../types";
 
     export let user: User;
+    export let accessToken: string;
     let text = "";
     let todos: Array<{ text: string; completed: boolean }> = [];
 
@@ -22,21 +23,23 @@ import type { User } from "../types";
     });
 </script>
 
-<style>
-    .complete {
-        text-decoration: line-through;
-        cursor: pointer;
-    }
-    .complete:hover {
-        color: deepskyblue;
-    }
-</style>
-
 <div>Hello: {user.name}</div>
 
 <form
-    on:submit|preventDefault={() => {
+    on:submit|preventDefault={async () => {
         todos = [{ text, completed: false }, ...todos];
+        const response = await fetch(`${apiBaseUrl}/todo`, {
+            method: "POSt",
+            body: JSON.stringify({
+                text,
+            }),
+            headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${accessToken}`,
+            },
+        });
+        const { todo } = await response.json();
+        todos = [todo, ...todos];
         text = "";
     }}
 >
@@ -56,3 +59,13 @@ import type { User } from "../types";
         </li>
     {/each}
 </ul>
+
+<style>
+    .complete {
+        text-decoration: line-through;
+        cursor: pointer;
+    }
+    .complete:hover {
+        color: deepskyblue;
+    }
+</style>
