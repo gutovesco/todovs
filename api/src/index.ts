@@ -62,8 +62,14 @@ import { isAuth, ReqWithUserId } from './isAuth';
         });
 
     app.post("/todo", isAuth, async (req: any, res) => {
-        const todo = await Todo.create({text: req.body.text, creatorId: req.userId}).save();
+        const todo = await Todo.create({ text: req.body.text, creatorId: req.userId }).save();
         res.send({ todo });
+    });
+
+    app.get("/todo", isAuth, async (req: any, res) => {
+        const todos = await Todo.find({ where: { creatorId: req.userId }, order: {id: 'DESC'} });
+
+        res.send({todos});
     });
 
     app.get("/me", async (req, res) => {
@@ -105,5 +111,6 @@ import { isAuth, ReqWithUserId } from './isAuth';
             res.send("hello");
         });
         console.log('listening on 3006!');
+        console.log('updated');
     });
 })();
